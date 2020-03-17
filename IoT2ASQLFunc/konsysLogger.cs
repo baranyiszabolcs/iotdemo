@@ -33,10 +33,23 @@ namespace IoT2ASQLFunc
         {
             string messageBody = Encoding.UTF8.GetString(message.Body.Array);
             log.LogInformation($"C# IoT Hub trigger function processed a message: {messageBody}");
+            foreach ( var pkey in message.Properties.Keys)
+            {
+                var pvalue = message.Properties[pkey];
+                log.LogInformation($"C# IoT Hub properties: {pkey}  :   {pvalue}");
+
+            }
+            foreach (var pkey in message.SystemProperties.Keys)
+            {
+                var pvalue = message.SystemProperties[pkey];
+                log.LogInformation($"C# IoT Hub system properties: {pkey}  :   {pvalue}");
+
+            }
 
 
+           // return;  // csak hogy mot NE zavarjon be a DB be írás
             // Get the connection string from app settings and use it to create a connection.
-         
+
             var str = System.Environment.GetEnvironmentVariable("sqldb_connection");
             using (SqlConnection conn = new SqlConnection(str))
             {
@@ -56,33 +69,28 @@ namespace IoT2ASQLFunc
                     log.LogInformation($"{rows} rows were inserted");
                 }
             }
-         
-           
         }
-
-
-        /*
-        [FunctionName("EventHubTriggerCSharp")]
-        public static void Run(
-    [EventHubTrigger("samples-workitems", Connection = "EventHubConnectionAppSetting")] EventData myEventHubMessage,
-    DateTime enqueuedTimeUtc,
-    Int64 sequenceNumber,
-    string offset,
-    ILogger log)
-        {
-            log.LogInformation($"Event: {Encoding.UTF8.GetString(myEventHubMessage.Body)}");
-            // Metadata accessed by binding to EventData
-            log.LogInformation($"EnqueuedTimeUtc={myEventHubMessage.SystemProperties.EnqueuedTimeUtc}");
-            log.LogInformation($"SequenceNumber={myEventHubMessage.SystemProperties.SequenceNumber}");
-            log.LogInformation($"Offset={myEventHubMessage.SystemProperties.Offset}");
-            // Metadata accessed by using binding expressions in method parameters
-            log.LogInformation($"EnqueuedTimeUtc={enqueuedTimeUtc}");
-            log.LogInformation($"SequenceNumber={sequenceNumber}");
-            log.LogInformation($"Offset={offset}");
-        }
-        */
     }
 
+    
+[FunctionName("EventHubTriggerCSharp")]
+public static void Run(
+[EventHubTrigger("samples-workitems", Connection = "EventHubConnectionAppSetting")] EventData myEventHubMessage,
+DateTime enqueuedTimeUtc,
+Int64 sequenceNumber,
+string offset,
+ILogger log)
+{
+    log.LogInformation($"Event: {Encoding.UTF8.GetString(myEventHubMessage.Body)}");
+    // Metadata accessed by binding to EventData
+    log.LogInformation($"EnqueuedTimeUtc={myEventHubMessage.SystemProperties.EnqueuedTimeUtc}");
+    log.LogInformation($"SequenceNumber={myEventHubMessage.SystemProperties.SequenceNumber}");
+    log.LogInformation($"Offset={myEventHubMessage.SystemProperties.Offset}");
+    // Metadata accessed by using binding expressions in method parameters
+    log.LogInformation($"EnqueuedTimeUtc={enqueuedTimeUtc}");
+    log.LogInformation($"SequenceNumber={sequenceNumber}");
+    log.LogInformation($"Offset={offset}");
+}
 
 
 

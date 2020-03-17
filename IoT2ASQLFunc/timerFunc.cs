@@ -10,12 +10,12 @@ namespace IoT2ASQLFunc
     public static  class timerFunc
     {
         [FunctionName("timerFunc")]
-        public static async void Run([TimerTrigger("*/15 * * * * *")]TimerInfo myTimer, ILogger log)
+        public static async void Run([TimerTrigger("*/15 5 * * * *")]TimerInfo myTimer, ILogger log)
         {  /// every 15 sec   cron:sec min hour day month year
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
 
             // Get the connection string from app settings and use it to create a connection.
-            var str = Environment.GetEnvironmentVariable("sqldb_connection");
+          /*  var str = Environment.GetEnvironmentVariable("sqldb_connection");
             using (SqlConnection conn = new SqlConnection(str))
             {
                 conn.Open();
@@ -29,6 +29,7 @@ namespace IoT2ASQLFunc
                     log.LogInformation($"{rows} rows were updated");
                 }
             }
+            */
         }
     }
 
